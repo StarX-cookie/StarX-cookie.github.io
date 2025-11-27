@@ -784,6 +784,341 @@
             color: #888;
         }
         
+        /* 特工任务样式 */
+        .mission-container {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #2a2f15;
+            border: 2px solid #5a5a2a;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mission-container.active {
+            display: block;
+        }
+        
+        .mission-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #5a5a2a;
+        }
+        
+        .mission-title {
+            font-size: 2.5rem;
+            color: #e8dfb9;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .mission-subtitle {
+            font-size: 1rem;
+            color: #9e9466;
+            font-style: italic;
+        }
+        
+        .mission-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #5a5a2a;
+        }
+        
+        .mission-tab {
+            padding: 10px 20px;
+            background-color: #1a1f0d;
+            border: 1px solid #5a5a2a;
+            border-bottom: none;
+            margin-right: 5px;
+            cursor: pointer;
+            border-radius: 3px 3px 0 0;
+            font-weight: bold;
+        }
+        
+        .mission-tab.active {
+            background-color: #5a5a2a;
+            color: #f0e6c3;
+        }
+        
+        .mission-tab-content {
+            display: none;
+        }
+        
+        .mission-tab-content.active {
+            display: block;
+        }
+        
+        .mission-levels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .mission-level {
+            background-color: #1a1f0d;
+            border: 2px solid #5a5a2a;
+            border-radius: 8px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .mission-level:hover {
+            border-color: #d4c9a9;
+            transform: translateY(-3px);
+        }
+        
+        .mission-level.completed {
+            border-color: #8fbc8f;
+            background-color: #1a2f15;
+        }
+        
+        .mission-level.completed::after {
+            content: "✓";
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: #8fbc8f;
+            font-weight: bold;
+        }
+        
+        .mission-level.unlocked {
+            border-color: #d4a959;
+            background-color: #2f2a15;
+        }
+        
+        .mission-level.locked {
+            background-color: #1a1a1a;
+            border-color: #333;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .mission-level-number {
+            font-size: 2rem;
+            color: #d4c9a9;
+            margin-bottom: 10px;
+        }
+        
+        .mission-level-title {
+            font-size: 0.9rem;
+            color: #9e9466;
+        }
+        
+        .mission-details {
+            background-color: #1a1f0d;
+            border: 1px solid #5a5a2a;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .mission-details-title {
+            font-size: 1.5rem;
+            color: #e8dfb9;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .mission-details-description {
+            color: #d4c9a9;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .mission-input-group {
+            margin-bottom: 20px;
+        }
+        
+        .mission-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #b8ad80;
+        }
+        
+        .mission-input {
+            width: 100%;
+            padding: 12px;
+            background-color: #0a0f05;
+            border: 1px solid #5a5a2a;
+            color: #d4c9a9;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            border-radius: 3px;
+        }
+        
+        .mission-input:focus {
+            outline: none;
+            border-color: #d4c9a9;
+            box-shadow: 0 0 5px rgba(212, 201, 169, 0.5);
+        }
+        
+        .mission-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .mission-btn {
+            flex: 1;
+            padding: 12px;
+            background-color: #5a5a2a;
+            color: #d4c9a9;
+            border: 1px solid #9e9466;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .mission-btn:hover {
+            background-color: #6b6b33;
+            box-shadow: 0 0 8px rgba(212, 201, 169, 0.3);
+        }
+        
+        .mission-btn:disabled {
+            background-color: #333;
+            color: #666;
+            cursor: not-allowed;
+            border-color: #444;
+        }
+        
+        .mission-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .mission-result.success {
+            background-color: rgba(143, 188, 143, 0.2);
+            border: 1px solid #8fbc8f;
+            color: #8fbc8f;
+            display: block;
+        }
+        
+        .mission-result.failure {
+            background-color: rgba(188, 143, 143, 0.2);
+            border: 1px solid #bc8f8f;
+            color: #bc8f8f;
+            display: block;
+        }
+        
+        .certificate-container {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #1a1f0d;
+            border: 2px solid #5a5a2a;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .certificate-container.active {
+            display: block;
+        }
+        
+        .certificate-title {
+            font-size: 3rem;
+            color: #e8dfb9;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(232, 223, 185, 0.5);
+        }
+        
+        .certificate-subtitle {
+            font-size: 1.5rem;
+            color: #d4c9a9;
+            margin-bottom: 30px;
+        }
+        
+        .certificate-content {
+            font-size: 1.2rem;
+            color: #9e9466;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .certificate-seal {
+            width: 150px;
+            height: 150px;
+            border: 3px solid #d4a959;
+            border-radius: 50%;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #d4a959;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .certificate-download {
+            padding: 12px 25px;
+            background-color: #5a5a2a;
+            color: #d4c9a9;
+            border: 1px solid #9e9466;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+        
+        .certificate-download:hover {
+            background-color: #6b6b33;
+            box-shadow: 0 0 8px rgba(212, 201, 169, 0.3);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #1a1f0d;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #5a5a2a, #d4a959);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #9e9466;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
         /* 通用样式 */
         @keyframes flash {
             0% { background-color: #1a1f0d; }
@@ -921,6 +1256,10 @@
             .enigma-input-output {
                 flex-direction: column;
             }
+            
+            .mission-levels-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
         }
     </style>
 </head>
@@ -928,7 +1267,7 @@
     <div class="military-elements">
         <div class="radar"></div>
         <div class="binoculars"></div>
-        <div class="code-snippet">01001101 01101001 01110011 01110011 01101001 01101111 01101110 00100000 01010011 01110100 01100001 01110010 01110100</div>
+        <div class="code-snippet">01001101 COOKIE  01101001 COOKIE  01110011 COOKIE 01101001 COOKIE  01101111 COOKIE  01101110 COOKIE  00100000 COOKIE  01010011 COOKIE  01110100 COOKIE  01100001 COOKIE  01110010 01110100</div>
     </div>
     
     <!-- 主页面 -->
@@ -940,7 +1279,7 @@
         
         <div class="buttons-container">
             <button class="btn" id="morse-btn">
-                <span class="btn-icon">• • • — — — • • •</span>
+                <span class="btn-icon">— • — •</span>
                 摩斯电码
                 <div class="btn-description">二战盟军通信密码系统<br>通过点和划传递秘密信息</div>
             </button>
@@ -956,10 +1295,17 @@
                 恩尼格玛机
                 <div class="btn-description">德军高级加密设备<br>多转子系统复杂加密</div>
             </button>
+            
+            <!-- 新增特工任务按钮 -->
+            <button class="btn" id="mission-btn">
+                <span class="btn-icon">★★★</span>
+                特工任务
+                <div class="btn-description">18关密码破译挑战<br>完成所有任务获取毕业证书</div>
+            </button>
         </div>
         
         <footer>
-            <p>少年特工密码系统 | 机密等级：最高 | 仅供授权人员使用</p>
+            <p>少年特工-COOKIE密码系统 | 机密等级：最高 | 仅供授权人员使用</p>
         </footer>
     </div>
     
@@ -1181,6 +1527,70 @@
             </div>
         </div>
     </div>
+    
+    <!-- 新增特工任务工具 -->
+    <div class="mission-container" id="mission-tool">
+        <button class="back-btn" id="mission-back-btn">返回</button>
+        <div class="tool-header">
+            <h2 class="tool-title">特工任务</h2>
+            <p class="tool-subtitle">18关密码破译挑战 - 证明你的特工技能</p>
+        </div>
+        
+        <div class="mission-tabs">
+            <div class="mission-tab active" data-tab="levels">关卡选择</div>
+            <div class="mission-tab" data-tab="certificate">毕业证书</div>
+        </div>
+        
+        <div class="mission-tab-content active" id="mission-levels-tab">
+            <div class="progress-text">任务进度: <span id="mission-progress-text">0/18</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="mission-progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <div class="mission-levels-grid" id="mission-levels-grid">
+                <!-- 关卡将通过JavaScript生成 -->
+            </div>
+            
+            <div class="mission-details" id="mission-details">
+                <div class="mission-details-title">选择关卡开始任务</div>
+                <div class="mission-details-description">
+                    点击左侧的关卡卡片查看任务详情并开始挑战。每完成一个关卡，下一个关卡将自动解锁。
+                </div>
+            </div>
+        </div>
+        
+        <div class="mission-tab-content" id="mission-certificate-tab">
+            <div class="certificate-container" id="certificate-container">
+                <div class="certificate-title">特工毕业证书</div>
+                <div class="certificate-subtitle">少年特工密码破译专家</div>
+                
+                <div class="certificate-content">
+                    兹证明 <strong id="certificate-agent-name">[特工姓名]</strong> 已完成全部18项密码破译任务，<br>
+                    展现了卓越的密码学技能和特工素质，<br>
+                    特授予此证书以资表彰。
+                </div>
+                
+                <div class="certificate-seal">
+                    少年特工
+                </div>
+                
+                <div class="certificate-content">
+                    颁发日期: <span id="certificate-date">[日期]</span><br>
+                    证书编号: <span id="certificate-id">[编号]</span>
+                </div>
+                
+                <button class="certificate-download" id="certificate-download-btn">下载证书</button>
+            </div>
+            
+            <div class="mission-details" id="certificate-locked">
+                <div class="mission-details-title">毕业证书尚未解锁</div>
+                <div class="mission-details-description">
+                    完成全部18个特工任务后，你将获得少年特工毕业证书。<br>
+                    继续努力，证明你的密码破译能力！
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // 页面导航功能
@@ -1188,14 +1598,17 @@
         const morseTool = document.getElementById('morse-tool');
         const caesarTool = document.getElementById('caesar-tool');
         const enigmaTool = document.getElementById('enigma-tool');
+        const missionTool = document.getElementById('mission-tool');
         
         const morseBtn = document.getElementById('morse-btn');
         const caesarBtn = document.getElementById('caesar-btn');
         const enigmaBtn = document.getElementById('enigma-btn');
+        const missionBtn = document.getElementById('mission-btn');
         
         const morseBackBtn = document.getElementById('morse-back-btn');
         const caesarBackBtn = document.getElementById('caesar-back-btn');
         const enigmaBackBtn = document.getElementById('enigma-back-btn');
+        const missionBackBtn = document.getElementById('mission-back-btn');
         
         // 显示指定工具，隐藏其他
         function showTool(tool) {
@@ -1203,6 +1616,7 @@
             morseTool.classList.remove('active');
             caesarTool.classList.remove('active');
             enigmaTool.classList.remove('active');
+            missionTool.classList.remove('active');
             
             if (tool === 'morse') {
                 morseTool.classList.add('active');
@@ -1210,6 +1624,10 @@
                 caesarTool.classList.add('active');
             } else if (tool === 'enigma') {
                 enigmaTool.classList.add('active');
+            } else if (tool === 'mission') {
+                missionTool.classList.add('active');
+                // 初始化任务系统
+                initMissions();
             }
         }
         
@@ -1219,16 +1637,19 @@
             morseTool.classList.remove('active');
             caesarTool.classList.remove('active');
             enigmaTool.classList.remove('active');
+            missionTool.classList.remove('active');
         }
         
         // 添加事件监听器
         morseBtn.addEventListener('click', () => showTool('morse'));
         caesarBtn.addEventListener('click', () => showTool('caesar'));
         enigmaBtn.addEventListener('click', () => showTool('enigma'));
+        missionBtn.addEventListener('click', () => showTool('mission'));
         
         morseBackBtn.addEventListener('click', backToMain);
         caesarBackBtn.addEventListener('click', backToMain);
         enigmaBackBtn.addEventListener('click', backToMain);
+        missionBackBtn.addEventListener('click', backToMain);
         
         // 添加键盘快捷键支持
         document.addEventListener('keydown', function(event) {
@@ -1242,6 +1663,9 @@
                         break;
                     case '3':
                         enigmaBtn.click();
+                        break;
+                    case '4':
+                        missionBtn.click();
                         break;
                 }
             }
@@ -1882,6 +2306,379 @@
         document.addEventListener('DOMContentLoaded', () => {
             initEnigmaLampsAndKeys();
             updateEnigmaRotorStatus();
+        });
+        
+        // 特工任务功能
+        const missionLevelsGrid = document.getElementById('mission-levels-grid');
+        const missionDetails = document.getElementById('mission-details');
+        const missionProgressText = document.getElementById('mission-progress-text');
+        const missionProgressFill = document.getElementById('mission-progress-fill');
+        const missionTabs = document.querySelectorAll('.mission-tab');
+        const missionTabContents = document.querySelectorAll('.mission-tab-content');
+        const certificateContainer = document.getElementById('certificate-container');
+        const certificateLocked = document.getElementById('certificate-locked');
+        const certificateDownloadBtn = document.getElementById('certificate-download-btn');
+
+        // 特工任务数据
+        const missionData = [
+    {
+        id: 1,
+        title: "摩斯入门",
+        description: "将单词 'HELLO' 转换为摩斯电码，字母间隔一个空格。",
+        type: "morse",
+        answer: ".... . .-.. .-.. ---",
+        unlocked: true
+    },
+    {
+        id: 2,
+        title: "凯撒初试",
+        description: "使用凯撒密码（密钥为3）解密 'KHOOR'。",
+        type: "caesar",
+        answer: "HELLO",
+        key: 3,
+        unlocked: false
+    },
+    {
+        id: 3,
+        title: "恩尼格玛初探",
+        description: "使用恩尼格玛机（转子位置AAA）加密字母 'A'。",
+        type: "enigma",
+        answer: "W",
+        rotorPositions: [0, 0, 0],
+        unlocked: false
+    },
+    {
+        id: 4,
+        title: "摩斯解密",
+        description: "解密摩斯电码 \" --  ---  .-.  ... . \"",
+        type: "morse",
+        answer: "MORSE",
+        unlocked: false
+    },
+    {
+        id: 5,
+        title: "凯撒加密",
+        description: "使用凯撒密码（密钥为5）加密 'SECRET'。",
+        type: "caesar",
+        answer: "XJHWJY",
+        key: 5,
+        unlocked: false
+    },
+    {
+        id: 6,
+        title: "恩尼格玛消息",
+        description: "使用恩尼格玛机（转子位置ABC）加密 'TEST'。",
+        type: "enigma",
+        answer: "DMIM",
+        unlocked: false
+    },
+    {
+        id: 7,
+        title: "混合密码1",
+        description: "先用凯撒密码（密钥7）加密 'AGENT'，再转换为摩斯电码。",
+        type: "mixed",
+        answer: ".... -. .-.. ..- .-",
+        unlocked: false
+    },
+    {
+        id: 8,
+        title: "混合密码2",
+        description: "解密摩斯电码 '.-- -... --- .-..'，然后使用凯撒密码（密钥3）解密结果。",
+        type: "mixed",
+        answer: "ZERO",
+        unlocked: false
+    },
+    {
+        id: 9,
+        title: "恩尼格玛配置",
+        description: "使用恩尼格玛机（转子位置XYZ）加密 'MESSAGE'。",
+        type: "enigma",
+        answer: "AZCPHQX",
+        unlocked: false
+    },
+    {
+        id: 10,
+        title: "中级挑战1",
+        description: "解密凯撒密码（密钥:1-5）'WKLV LV D PHVVDJH'。",
+        type: "caesar",
+        answer: "THIS IS A MESSAGE",
+        key: 3,
+        unlocked: false
+    },
+    {
+        id: 11,
+        title: "中级挑战2",
+        description: "将 'ENCRYPTION' 转换为摩斯电码，字母间隔一个空格。",
+        type: "morse",
+        answer: ". -. -.-. .-. -.-- .--. - .. --- -.",
+        unlocked: false
+    },
+    {
+        id: 12,
+        title: "恩尼格玛挑战",
+        description: "使用恩尼格玛机（转子位置CCC）加密 'CHALLENGE'。",
+        type: "enigma",
+        answer: "GEEKHAARS",
+        unlocked: false
+    },
+    {
+        id: 13,
+        title: "高级混合1",
+        description: "先用恩尼格玛机（转子位置AAA）加密 'CODE'，再转换为摩斯电码。",
+        type: "mixed",
+        answer: "--- .-.. ...- -.-",
+        unlocked: false
+    },
+    {
+        id: 14,
+        title: "高级混合2",
+        description: "解密摩斯电码 '-.-. --- -- -... --- -..'，然后使用凯撒密码（密钥10）解密结果。",
+        type: "mixed",
+        answer: "SECRET",
+        unlocked: false
+    },
+    {
+        id: 15,
+        title: "凯撒高级",
+        description: "解密凯撒密码（密钥:2或3）'WHVW SDVV'。",
+        type: "caesar",
+        answer: "TEST PASS",
+        key: 3,
+        unlocked: false
+    },
+    {
+        id: 16,
+        title: "恩尼格玛高级",
+        description: "使用恩尼格玛机（转子位置QWE）加密 'FINALTEST'。",
+        type: "enigma",
+        answer: "SORFEQYLQ",
+        unlocked: false
+    },
+    {
+        id: 17,
+        title: "终极挑战1",
+        description: "结合使用三种密码系统加密 'SPY'，凯撒加密7位，恩尼格玛机（转子位置AAA），转摩斯电码。",
+        type: "mixed",
+        answer: "- -. -",
+        unlocked: false
+    },
+    {
+        id: 18,
+        title: "终极挑战2",
+        description: "解密这个最终消息：'SUCCESS'先用凯撒密码（密钥13）解密，再用恩尼格玛机（转子位置AAA）解密，最后转换为摩斯电码。",
+        type: "mixed",
+        answer: "-.- -. ..-. ... --.. .. ---",
+        unlocked: false
+    }
+        ];
+
+        // 初始化特工任务
+        function initMissions() {
+            // 从本地存储加载任务进度
+            const savedProgress = localStorage.getItem('missionProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                missionData.forEach(mission => {
+                    if (progress[mission.id]) {
+                        mission.completed = progress[mission.id].completed;
+                        mission.unlocked = progress[mission.id].unlocked;
+                    }
+                });
+            } else {
+                // 初始化任务状态
+                missionData[0].unlocked = true;
+                saveMissionProgress();
+            }
+            
+            renderMissionLevels();
+            updateMissionProgress();
+        }
+
+        // 渲染任务关卡
+        function renderMissionLevels() {
+            missionLevelsGrid.innerHTML = '';
+            
+            missionData.forEach(mission => {
+                const levelElement = document.createElement('div');
+                levelElement.className = 'mission-level';
+                
+                if (mission.completed) {
+                    levelElement.classList.add('completed');
+                } else if (mission.unlocked) {
+                    levelElement.classList.add('unlocked');
+                } else {
+                    levelElement.classList.add('locked');
+                }
+                
+                levelElement.innerHTML = `
+                    <div class="mission-level-number">${mission.id}</div>
+                    <div class="mission-level-title">${mission.title}</div>
+                `;
+                
+                if (mission.unlocked) {
+                    levelElement.addEventListener('click', () => showMissionDetails(mission));
+                }
+                
+                missionLevelsGrid.appendChild(levelElement);
+            });
+        }
+
+        // 显示任务详情
+        function showMissionDetails(mission) {
+            let missionHTML = `
+                <div class="mission-details-title">任务 ${mission.id}: ${mission.title}</div>
+                <div class="mission-details-description">${mission.description}</div>
+            `;
+            
+            missionHTML += `
+                <div class="mission-input-group">
+                    <label for="mission-answer" class="mission-label">输入答案:</label>
+                    <input type="text" id="mission-answer" class="mission-input" placeholder="输入你的答案...">
+                </div>
+                <div class="mission-controls">
+                    <button class="mission-btn" id="mission-submit-btn">提交答案</button>
+                    <button class="mission-btn" id="mission-reset-btn">重置</button>
+                </div>
+                <div class="mission-result" id="mission-result"></div>
+            `;
+            
+            missionDetails.innerHTML = missionHTML;
+            
+            // 添加事件监听器
+            document.getElementById('mission-submit-btn').addEventListener('click', () => checkMissionAnswer(mission));
+            document.getElementById('mission-reset-btn').addEventListener('click', () => showMissionDetails(mission));
+        }
+
+        // 检查任务答案
+        function checkMissionAnswer(mission) {
+            const userAnswer = document.getElementById('mission-answer').value.trim().toUpperCase();
+            const correctAnswer = mission.answer.toUpperCase();
+            const resultElement = document.getElementById('mission-result');
+            
+            if (userAnswer === correctAnswer) {
+                resultElement.textContent = "任务完成！答案正确！";
+                resultElement.className = "mission-result success";
+                
+                // 标记任务为完成
+                mission.completed = true;
+                
+                // 解锁下一个任务
+                if (mission.id < missionData.length) {
+                    missionData[mission.id].unlocked = true;
+                }
+                
+                // 保存进度
+                saveMissionProgress();
+                
+                // 更新UI
+                renderMissionLevels();
+                updateMissionProgress();
+                
+                // 检查是否所有任务都已完成
+                checkAllMissionsCompleted();
+            } else {
+                resultElement.textContent = "答案不正确，请再试一次。";
+                resultElement.className = "mission-result failure";
+            }
+        }
+
+        // 保存任务进度
+        function saveMissionProgress() {
+            const progress = {};
+            missionData.forEach(mission => {
+                progress[mission.id] = {
+                    completed: mission.completed || false,
+                    unlocked: mission.unlocked || false
+                };
+            });
+            localStorage.setItem('missionProgress', JSON.stringify(progress));
+        }
+
+        // 更新任务进度显示
+        function updateMissionProgress() {
+            const completedMissions = missionData.filter(mission => mission.completed).length;
+            const totalMissions = missionData.length;
+            const progressPercentage = (completedMissions / totalMissions) * 100;
+            
+            missionProgressText.textContent = `${completedMissions}/${totalMissions}`;
+            missionProgressFill.style.width = `${progressPercentage}%`;
+        }
+
+        // 检查是否所有任务都已完成
+        function checkAllMissionsCompleted() {
+            const allCompleted = missionData.every(mission => mission.completed);
+            
+            if (allCompleted) {
+                // 显示毕业证书
+                showCertificate();
+            }
+        }
+
+        // 显示毕业证书
+        function showCertificate() {
+            // 切换到证书标签
+            missionTabs.forEach(tab => tab.classList.remove('active'));
+            missionTabContents.forEach(content => content.classList.remove('active'));
+            
+            document.querySelector('.mission-tab[data-tab="certificate"]').classList.add('active');
+            document.getElementById('mission-certificate-tab').classList.add('active');
+            
+            // 显示证书
+            certificateContainer.classList.add('active');
+            certificateLocked.style.display = 'none';
+            
+            // 设置证书内容
+            const today = new Date();
+            const formattedDate = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+            const certificateId = `ST-${today.getTime().toString().substring(7)}`;
+            
+            document.getElementById('certificate-date').textContent = formattedDate;
+            document.getElementById('certificate-id').textContent = certificateId;
+            
+            // 从本地存储获取特工姓名或提示输入
+            let agentName = localStorage.getItem('agentName');
+            if (!agentName) {
+                agentName = prompt("恭喜你完成所有任务！请输入你的特工姓名：");
+                if (agentName) {
+                    localStorage.setItem('agentName', agentName);
+                } else {
+                    agentName = "匿名特工";
+                }
+            }
+            document.getElementById('certificate-agent-name').textContent = agentName;
+        }
+
+        // 证书下载功能
+        certificateDownloadBtn.addEventListener('click', () => {
+            // 创建证书图像并下载
+            alert("证书下载功能已触发！在实际应用中，这里会生成可下载的证书图像。");
+        });
+
+        // 特工任务标签切换
+        missionTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // 移除所有标签和内容的active类
+                missionTabs.forEach(t => t.classList.remove('active'));
+                missionTabContents.forEach(content => content.classList.remove('active'));
+                
+                // 添加当前标签和内容的active类
+                tab.classList.add('active');
+                document.getElementById(`mission-${tabId}-tab`).classList.add('active');
+                
+                // 如果切换到证书标签且未完成所有任务，显示锁定消息
+                if (tabId === 'certificate') {
+                    const allCompleted = missionData.every(mission => mission.completed);
+                    if (allCompleted) {
+                        certificateContainer.classList.add('active');
+                        certificateLocked.style.display = 'none';
+                    } else {
+                        certificateContainer.classList.remove('active');
+                        certificateLocked.style.display = 'block';
+                    }
+                }
+            });
         });
     </script>
 </body>
