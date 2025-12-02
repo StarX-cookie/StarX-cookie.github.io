@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>少年特工 - 密码工具集</title>
+    <title>少年特工 - 密码工具集 & 夜莺行动</title>
     <style>
         * {
             margin: 0;
@@ -1119,11 +1119,269 @@
             margin-bottom: 10px;
         }
         
+        /* 游戏容器样式 */
+        .game-container {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #2a2f15;
+            border: 2px solid #5a5a2a;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-container.active {
+            display: block;
+        }
+        
+        /* 游戏界面样式 */
+        .game-terminal {
+            width: 100%;
+            height: 600px;
+            background-color: #1a1a1a;
+            border: 2px solid #4a4a4a;
+            box-shadow: 0 0 40px rgba(0,0,0,0.9);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
+        }
+        
+        .game-viewport {
+            flex: 6;
+            background-color: #111;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid #000;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease;
+        }
+        
+        .game-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .game-character {
+            position: absolute;
+            bottom: 0;
+            height: 400px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            z-index: 10;
+            filter: 
+                grayscale(80%) 
+                brightness(80%)
+                drop-shadow(0 0 3px rgba(0,0,0,0.7));
+            mix-blend-mode: darken;
+        }
+        
+        .game-character[src=""] {
+            background-color: transparent !important;
+        }
+        
+        .game-char-left { 
+            left: 50px; 
+            transform: translateX(-50px); 
+        }
+        .game-char-right { 
+            right: 50px; 
+            transform: translateX(50px); 
+        }
+        
+        .game-char-active { 
+            opacity: 1 !important; 
+            transform: translateX(0) !important; 
+            mix-blend-mode: normal !important;
+        }
+        
+        .game-speaking { 
+            filter: 
+                brightness(100%)
+                drop-shadow(0 0 8px rgba(255, 204, 0, 0.3)) !important; 
+            mix-blend-mode: normal !important;
+            z-index: 12; 
+        }
+        .game-silent { 
+            filter: 
+                grayscale(90%) 
+                brightness(50%)
+                drop-shadow(0 0 2px rgba(0,0,0,0.5)) !important; 
+            mix-blend-mode: darken !important;
+            z-index: 10; 
+        }
+        
+        .game-interface {
+            flex: 4;
+            background: #111;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .game-speaker-box {
+            color: #ffcc00;
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+        
+        .game-text-box {
+            font-size: 17px;
+            line-height: 1.6;
+            flex-grow: 1;
+            color: #eee;
+            text-shadow: 0 0 2px #000;
+            padding: 10px 0;
+            min-height: 120px;
+        }
+        
+        .game-controls {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #333;
+        }
+        
+        .game-btn {
+            background: #222;
+            border: 1px solid #ffcc00;
+            color: #ffcc00;
+            padding: 10px 25px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        .game-btn:hover { 
+            background: #ffcc00; 
+            color: #000; 
+            box-shadow: 0 0 8px #ffcc00;
+            transform: translateY(-1px);
+        }
+        .game-btn:active {
+            transform: translateY(0);
+        }
+        
+        .game-puzzle-box {
+            display: none;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            margin-top: 10px;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+        }
+        .game-puzzle-input {
+            background: #000;
+            border: 1px solid #ffcc00;
+            color: #0f0;
+            padding: 10px;
+            font-family: inherit;
+            width: 250px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 5px;
+            text-shadow: 0 0 5px #0f0;
+            box-shadow: 0 0 5px rgba(0,255,0,0.3) inset;
+        }
+        .game-puzzle-input::placeholder {
+            color: #666;
+            letter-spacing: normal;
+        }
+        
+        .game-puzzle-feedback {
+            font-size: 16px;
+            color: #ddd;
+            width: 60%;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+        .game-color-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+            border: 1px solid #fff;
+            box-shadow: 0 0 3px rgba(255,255,255,0.5);
+        }
+        .game-dot-green { 
+            background-color: #0f0; 
+            box-shadow: 0 0 5px #0f0;
+        }
+        .game-dot-yellow { 
+            background-color: #ffcc00; 
+            box-shadow: 0 0 5px #ffcc00;
+        }
+        .game-dot-red { 
+            background-color: #f00; 
+            box-shadow: 0 0 5px #f00;
+        }
+        
+        .game-typewriter-text::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        
+        .game-scene-transition {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .game-historical-note {
+            background: rgba(20, 20, 30, 0.8);
+            border-left: 3px solid #ffcc00;
+            padding: 10px 15px;
+            margin: 10px 0;
+            font-style: italic;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
         /* 通用样式 */
         @keyframes flash {
             0% { background-color: #1a1f0d; }
             50% { background-color: #5a5a2a; }
             100% { background-color: #1a1f0d; }
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0.7; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes radar-sweep {
+            0% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+            100% {
+                transform: translateX(-50%) rotate(360deg);
+            }
         }
         
         .military-elements {
@@ -1169,15 +1427,6 @@
             background: linear-gradient(to bottom, transparent, #9e9466);
             transform-origin: bottom center;
             animation: radar-sweep 4s linear infinite;
-        }
-        
-        @keyframes radar-sweep {
-            0% {
-                transform: translateX(-50%) rotate(0deg);
-            }
-            100% {
-                transform: translateX(-50%) rotate(360deg);
-            }
         }
         
         .code-snippet {
@@ -1260,6 +1509,30 @@
             .mission-levels-grid {
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             }
+            
+            .game-terminal {
+                height: 500px;
+            }
+            
+            .game-character {
+                height: 300px;
+            }
+            
+            .game-char-left { 
+                left: 20px; 
+            }
+            .game-char-right { 
+                right: 20px; 
+            }
+            
+            .game-puzzle-box {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .game-puzzle-input {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -1274,7 +1547,7 @@
     <div class="container" id="main-page">
         <header>
             <h1>少年特工</h1>
-            <p class="subtitle">精英密码工具集 - 专为特工任务设计的加密解密系统</p>
+            <p class="subtitle">精英密码工具集 & 互动谍战游戏 - 专为特工任务设计</p>
         </header>
         
         <div class="buttons-container">
@@ -1296,7 +1569,14 @@
                 <div class="btn-description">德军高级加密设备<br>多转子系统复杂加密</div>
             </button>
             
-            <!-- 新增特工任务按钮 -->
+            <!-- 新增游戏按钮 -->
+            <button class="btn" id="game-btn">
+                <span class="btn-icon">🎮</span>
+                夜莺行动
+                <div class="btn-description">互动式二战谍战游戏<br>扮演特工完成机密任务</div>
+            </button>
+            
+            <!-- 特工任务按钮 -->
             <button class="btn" id="mission-btn">
                 <span class="btn-icon">★★★</span>
                 特工任务
@@ -1528,7 +1808,42 @@
         </div>
     </div>
     
-    <!-- 新增特工任务工具 -->
+    <!-- 游戏容器 -->
+    <div class="game-container" id="game-tool">
+        <button class="back-btn" id="game-back-btn">返回</button>
+        <div class="tool-header">
+            <h2 class="tool-title">夜莺行动</h2>
+            <p class="tool-subtitle">互动式二战谍战游戏 - 扮演特工完成机密任务</p>
+        </div>
+        
+        <div class="game-terminal">
+            <div class="game-viewport" id="game-viewport">
+                <div class="game-overlay"></div>
+                
+                <img id="game-char-left" class="game-character game-char-left" src="" alt="左人物" onerror="this.style.display='none'">
+                <img id="game-char-right" class="game-character game-char-right" src="" alt="右人物" onerror="this.style.display='none'">
+            </div>
+
+            <div class="game-interface">
+                <div class="game-speaker-box" id="game-speaker-box">SYSTEM</div>
+                <div class="game-text-box"><span id="game-typewriter-text"></span></div>
+                
+                <div class="game-puzzle-box" id="game-puzzle-box">
+                    <span id="game-puzzle-feedback">请输入4位密码...</span>
+                    <div>
+                        <input type="text" id="game-puzzle-input" maxlength="4" autocomplete="off" placeholder="4位数字" pattern="[0-9]*">
+                        <button class="game-btn" id="game-puzzle-submit-btn">确定</button>
+                    </div>
+                </div>
+
+                <div class="game-controls" id="game-controls">
+                    <!-- 按钮将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 特工任务工具 -->
     <div class="mission-container" id="mission-tool">
         <button class="back-btn" id="mission-back-btn">返回</button>
         <div class="tool-header">
@@ -1593,21 +1908,24 @@
     </div>
 
     <script>
-        // 页面导航功能
+        // ==================== 页面导航功能 ====================
         const mainPage = document.getElementById('main-page');
         const morseTool = document.getElementById('morse-tool');
         const caesarTool = document.getElementById('caesar-tool');
         const enigmaTool = document.getElementById('enigma-tool');
+        const gameTool = document.getElementById('game-tool');
         const missionTool = document.getElementById('mission-tool');
         
         const morseBtn = document.getElementById('morse-btn');
         const caesarBtn = document.getElementById('caesar-btn');
         const enigmaBtn = document.getElementById('enigma-btn');
+        const gameBtn = document.getElementById('game-btn');
         const missionBtn = document.getElementById('mission-btn');
         
         const morseBackBtn = document.getElementById('morse-back-btn');
         const caesarBackBtn = document.getElementById('caesar-back-btn');
         const enigmaBackBtn = document.getElementById('enigma-back-btn');
+        const gameBackBtn = document.getElementById('game-back-btn');
         const missionBackBtn = document.getElementById('mission-back-btn');
         
         // 显示指定工具，隐藏其他
@@ -1616,6 +1934,7 @@
             morseTool.classList.remove('active');
             caesarTool.classList.remove('active');
             enigmaTool.classList.remove('active');
+            gameTool.classList.remove('active');
             missionTool.classList.remove('active');
             
             if (tool === 'morse') {
@@ -1624,6 +1943,14 @@
                 caesarTool.classList.add('active');
             } else if (tool === 'enigma') {
                 enigmaTool.classList.add('active');
+            } else if (tool === 'game') {
+                gameTool.classList.add('active');
+                // 延迟初始化游戏，确保DOM已加载
+                setTimeout(() => {
+                    if (typeof NightingaleGame !== 'undefined') {
+                        NightingaleGame.init();
+                    }
+                }, 100);
             } else if (tool === 'mission') {
                 missionTool.classList.add('active');
                 // 初始化任务系统
@@ -1637,6 +1964,7 @@
             morseTool.classList.remove('active');
             caesarTool.classList.remove('active');
             enigmaTool.classList.remove('active');
+            gameTool.classList.remove('active');
             missionTool.classList.remove('active');
         }
         
@@ -1644,11 +1972,13 @@
         morseBtn.addEventListener('click', () => showTool('morse'));
         caesarBtn.addEventListener('click', () => showTool('caesar'));
         enigmaBtn.addEventListener('click', () => showTool('enigma'));
+        gameBtn.addEventListener('click', () => showTool('game'));
         missionBtn.addEventListener('click', () => showTool('mission'));
         
         morseBackBtn.addEventListener('click', backToMain);
         caesarBackBtn.addEventListener('click', backToMain);
         enigmaBackBtn.addEventListener('click', backToMain);
+        gameBackBtn.addEventListener('click', backToMain);
         missionBackBtn.addEventListener('click', backToMain);
         
         // 添加键盘快捷键支持
@@ -1665,13 +1995,16 @@
                         enigmaBtn.click();
                         break;
                     case '4':
+                        gameBtn.click();
+                        break;
+                    case '5':
                         missionBtn.click();
                         break;
                 }
             }
         });
         
-        // 摩斯电码功能
+        // ==================== 摩斯电码功能 ====================
         const morseCodeMap = {
             'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 
             'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 
@@ -1839,7 +2172,7 @@
             });
         });
         
-        // 凯撒密码功能
+        // ==================== 凯撒密码功能 ====================
         // 凯撒密码DOM元素
         const caesarTabs = document.querySelectorAll('.caesar-tab');
         const caesarTabContents = document.querySelectorAll('.caesar-tab-content');
@@ -2023,7 +2356,7 @@
             }
         });
         
-        // 恩尼格玛密码机功能
+        // ==================== 恩尼格玛密码机功能 ====================
         // 恩尼格玛机模拟
         class EnigmaMachine {
             constructor() {
@@ -2308,7 +2641,715 @@
             updateEnigmaRotorStatus();
         });
         
-        // 特工任务功能
+        // ==================== 游戏引擎核心 ====================
+        const NightingaleGame = {
+            currScene: null,
+            typingTimeout: null,
+            
+            elements: {
+                viewport: document.getElementById('game-viewport'),
+                charLeft: document.getElementById('game-char-left'),
+                charRight: document.getElementById('game-char-right'),
+                speakerName: document.getElementById('game-speaker-box'),
+                textDisplay: document.getElementById('game-typewriter-text'),
+                controls: document.getElementById('game-controls'),
+                puzzleBox: document.getElementById('game-puzzle-box'),
+                puzzleInput: document.getElementById('game-puzzle-input'),
+                puzzleFeedback: document.getElementById('game-puzzle-feedback'),
+                puzzleSubmitBtn: document.getElementById('game-puzzle-submit-btn')
+            },
+
+            init: function() {
+                console.log('初始化夜莺行动游戏...');
+                
+                // 添加键盘事件监听器
+                this.elements.puzzleInput.addEventListener('keypress', (e) => {
+                    // 确保只允许数字输入
+                    if (!/[0-9]/.test(e.key) && e.key !== 'Enter') {
+                        e.preventDefault();
+                    }
+                    if (e.key === 'Enter') this.checkPuzzle();
+                });
+                
+                // 添加谜题提交按钮事件
+                this.elements.puzzleSubmitBtn.addEventListener('click', () => this.checkPuzzle());
+                
+                // 添加场景过渡效果
+                this.elements.viewport.classList.add('game-scene-transition');
+                
+                this.load('start');
+            },
+
+            load: function(id) {
+                const s = GameScenes[id];
+                if (!s) {
+                    console.error(`场景 ${id} 不存在！`);
+                    return;
+                }
+                
+                this.currScene = s;
+
+                // 重置尝试次数（如果进入新的谜题场景）
+                if (s.sceneId === 'puzzle_intro') {
+                    s.attempts = 0;
+                }
+
+                // 1. 设置背景
+                if (s.bg) {
+                    // 添加背景过渡效果
+                    this.elements.viewport.style.opacity = '0.7';
+                    setTimeout(() => {
+                        this.elements.viewport.style.backgroundImage = s.bg ? `url('${s.bg}')` : 'none';
+                        this.elements.viewport.style.opacity = '1';
+                    }, 200);
+                }
+
+                // 2. 渲染人物
+                this.setChar(this.elements.charLeft, s.left, s.focus === 'left');
+                this.setChar(this.elements.charRight, s.right, s.focus === 'right');
+
+                // 3. 文本和名字
+                this.elements.speakerName.innerText = s.speaker;
+                this.typeWriter(s.text);
+
+                // 4. 交互区域
+                this.elements.controls.innerHTML = '';
+                this.elements.puzzleBox.style.display = 'none';
+                this.elements.puzzleInput.value = '';
+                this.elements.puzzleFeedback.innerHTML = '请输入密码...';
+
+                if(s.type === 'dialogue') {
+                    s.options.forEach(opt => {
+                        let btn = document.createElement('button');
+                        btn.className = 'game-btn';
+                        btn.innerText = opt.text;
+                        btn.onclick = () => this.load(opt.target);
+                        this.elements.controls.appendChild(btn);
+                    });
+                } else if (s.type === 'puzzle') {
+                    this.elements.puzzleBox.style.display = 'flex';
+                    // 根据谜题场景设置输入长度
+                    if (s.sceneId === 'puzzle_intro') {
+                        this.elements.puzzleInput.maxLength = 4;
+                        this.elements.puzzleInput.placeholder = "4位数字";
+                    } else if (s.sceneId === 'enigma_puzzle') {
+                        this.elements.puzzleInput.maxLength = 6;
+                        this.elements.puzzleInput.placeholder = "破译单词";
+                    } else if (s.sceneId === 'coordinate_puzzle') {
+                        this.elements.puzzleInput.maxLength = 4;
+                        this.elements.puzzleInput.placeholder = "4位坐标";
+                    } else if (s.sceneId === 'radio_puzzle') {
+                        this.elements.puzzleInput.maxLength = 9;
+                        this.elements.puzzleInput.placeholder = "数字编码";
+                    } else if (s.sceneId === 'document_puzzle') {
+                        this.elements.puzzleInput.maxLength = 4;
+                        this.elements.puzzleInput.placeholder = "出生年份";
+                    } else {
+                        this.elements.puzzleInput.maxLength = 3;
+                        this.elements.puzzleInput.placeholder = "3位数字";
+                    }
+                    setTimeout(() => this.elements.puzzleInput.focus(), 300);
+                }
+            },
+
+            setChar: function(imgEl, imgSrc, isSpeaking) {
+                if (imgSrc && imgSrc !== GameAssets.empty) {
+                    // 防止重复加载相同的图片
+                    if (imgEl.src !== imgSrc) {
+                        imgEl.src = imgSrc;
+                    }
+                    
+                    // 添加类名控制显示和状态
+                    imgEl.classList.add('game-char-active');
+                    if (isSpeaking) {
+                        imgEl.classList.add('game-speaking');
+                        imgEl.classList.remove('game-silent');
+                        // 说话时使用正常混合模式，确保人物清晰可见
+                        imgEl.style.mixBlendMode = 'normal';
+                    } else {
+                        imgEl.classList.remove('game-speaking');
+                        imgEl.classList.add('game-silent');
+                        // 不说话时使用darken模式去除白色背景
+                        imgEl.style.mixBlendMode = 'darken';
+                    }
+                    
+                    // 确保图片显示
+                    imgEl.style.display = 'block';
+                } else {
+                    imgEl.classList.remove('game-char-active', 'game-speaking', 'game-silent');
+                    imgEl.style.display = 'none';
+                }
+            },
+
+            typeWriter: function(txt) {
+                const display = this.elements.textDisplay;
+                display.innerHTML = '';
+                clearTimeout(this.typingTimeout);
+
+                let i = 0;
+                const speed = 20; // ms
+
+                const type = () => {
+                    if (i < txt.length) {
+                        let char = txt.charAt(i);
+                        // 替换换行符
+                        if (char === '\n') char = '<br>';
+                        
+                        display.innerHTML += char;
+                        i++;
+                        this.typingTimeout = setTimeout(type, speed);
+                    }
+                };
+                type();
+            },
+
+            checkPuzzle: function() {
+                const s = this.currScene;
+                const inputVal = this.elements.puzzleInput.value.trim();
+
+                if (s.sceneId === 'puzzle_intro') {
+                    this.handleMastermind(inputVal);
+                } else if (s.sceneId === 'math_puzzle_intro') {
+                    this.handleMath(inputVal);
+                } else if (s.sceneId === 'enigma_puzzle') {
+                    this.handleEnigma(inputVal);
+                } else if (s.sceneId === 'coordinate_puzzle') {
+                    this.handleCoordinate(inputVal);
+                } else if (s.sceneId === 'radio_puzzle') {
+                    this.handleRadio(inputVal);
+                } else if (s.sceneId === 'document_puzzle') {
+                    this.handleDocument(inputVal);
+                }
+            },
+
+            handleMath: function(inputVal) {
+                 const s = this.currScene;
+                 // Math Answer: 027
+                 if (inputVal === s.answer) {
+                    this.elements.textDisplay.innerHTML += "<br><br> >> <span style='color:#0f0; text-shadow:0 0 5px #0f0;'>验证通过：ACCESS GRANTED</span>";
+                    this.elements.puzzleBox.style.display = 'none';
+                    setTimeout(() => this.load(s.success), 1500);
+                } else {
+                    this.elements.textDisplay.innerHTML = `<span style='color:#f00; text-shadow:0 0 3px #f00;'>${s.failMsg}</span>`;
+                }
+            },
+
+            handleEnigma: function(inputVal) {
+                const s = this.currScene;
+                if (inputVal.toUpperCase() === s.answer) {
+                    this.elements.textDisplay.innerHTML += "<br><br> >> <span style='color:#0f0; text-shadow:0 0 5px #0f0;'>破译成功！情报已获取。</span>";
+                    this.elements.puzzleBox.style.display = 'none';
+                    setTimeout(() => this.load(s.success), 1500);
+                } else {
+                    this.elements.textDisplay.innerHTML = `<span style='color:#f00; text-shadow:0 0 3px #f00;'>${s.failMsg}</span><br><br>提示：${s.hint || ''}`;
+                    this.elements.puzzleInput.value = '';
+                }
+            },
+
+            handleCoordinate: function(inputVal) {
+                const s = this.currScene;
+                if (inputVal === s.answer) {
+                    this.elements.textDisplay.innerHTML += "<br><br> >> <span style='color:#0f0; text-shadow:0 0 5px #0f0;'>坐标确认！发射场已定位。</span>";
+                    this.elements.puzzleBox.style.display = 'none';
+                    setTimeout(() => this.load(s.success), 1500);
+                } else {
+                    this.elements.textDisplay.innerHTML = `<span style='color:#f00; text-shadow:0 0 3px #f00;'>${s.failMsg}</span>`;
+                    this.elements.puzzleInput.value = '';
+                }
+            },
+
+            handleRadio: function(inputVal) {
+                const s = this.currScene;
+                if (inputVal === s.answer) {
+                    this.elements.textDisplay.innerHTML += "<br><br> >> <span style='color:#0f0; text-shadow:0 0 5px #0f0;'>虚假电报已发送！欺骗行动进行中。</span>";
+                    this.elements.puzzleBox.style.display = 'none';
+                    setTimeout(() => this.load(s.success), 1500);
+                } else {
+                    this.elements.textDisplay.innerHTML = `<span style='color:#f00; text-shadow:0 0 3px #f00;'>${s.failMsg}</span>`;
+                    this.elements.puzzleInput.value = '';
+                }
+            },
+
+            handleDocument: function(inputVal) {
+                const s = this.currScene;
+                if (inputVal === s.answer) {
+                    this.elements.textDisplay.innerHTML += "<br><br> >> <span style='color:#0f0; text-shadow:0 0 5px #0f0;'>文件完美伪造！家庭身份已确认。</span>";
+                    this.elements.puzzleBox.style.display = 'none';
+                    setTimeout(() => this.load(s.success), 1500);
+                } else {
+                    this.elements.textDisplay.innerHTML = `<span style='color:#f00; text-shadow:0 0 3px #f00;'>${s.failMsg}</span>`;
+                    this.elements.puzzleInput.value = '';
+                }
+            },
+
+            handleMastermind: function(inputVal) {
+                const s = this.currScene;
+                const code = s.targetCode;
+                s.attempts++;
+
+                if (inputVal.length !== 4 || isNaN(inputVal)) {
+                     this.elements.puzzleFeedback.innerHTML = '<span style="color:#f00; text-shadow:0 0 3px #f00;">请输入四位纯数字!</span>';
+                     this.elements.puzzleInput.value = '';
+                     return;
+                }
+
+                if (inputVal === code) {
+                    this.elements.textDisplay.innerHTML += `<br><br> >> <span style='color:#0f0; text-shadow:0 0 5px #0f0;'>密码面板发出蜂鸣声：锁定解除。</span>`;
+                    this.elements.puzzleBox.style.display = 'none';
+                    setTimeout(() => this.load(s.success), 1500);
+                    return;
+                }
+                
+                // --- Mastermind 逻辑 ---
+                let green = 0; // G: 数字和位置都正确
+                let yellow = 0; // Y: 数字正确，位置错误
+                let inputArr = inputVal.split('');
+                let codeArr = code.split('');
+                let tempCode = [...codeArr]; 
+
+                // 1. 检查绿色 (G)
+                for (let i = 0; i < 4; i++) {
+                    if (inputArr[i] === codeArr[i]) {
+                        green++;
+                        inputArr[i] = '_'; // 标记已匹配，不参与后续匹配
+                        tempCode[i] = '#'; // 标记已匹配，不参与后续匹配
+                    }
+                }
+
+                // 2. 检查黄色 (Y)
+                for (let i = 0; i < 4; i++) {
+                    if (inputArr[i] !== '_') {
+                        let index = tempCode.indexOf(inputArr[i]);
+                        if (index > -1) {
+                            yellow++;
+                            tempCode[index] = '#'; // 标记匹配
+                        }
+                    }
+                }
+
+                let red = 4 - green - yellow;
+                
+                // 生成反馈点
+                let feedbackHTML = `尝试 #${s.attempts}: `;
+                for(let i=0; i<green; i++) feedbackHTML += '<span class="game-color-dot game-dot-green"></span>';
+                for(let i=0; i<yellow; i++) feedbackHTML += '<span class="game-color-dot game-dot-yellow"></span>';
+                for(let i=0; i<red; i++) feedbackHTML += '<span class="game-color-dot game-dot-red"></span>';
+                
+                feedbackHTML += `<br> (G:${green} Y:${yellow} R:${red})`;
+
+                this.elements.puzzleFeedback.innerHTML = feedbackHTML;
+                this.elements.textDisplay.innerHTML = `<span style='color:#f00; text-shadow:0 0 3px #f00;'>${s.failMsg}</span><br> 当前尝试次数: ${s.attempts}/10`;
+                this.elements.puzzleInput.value = '';
+
+                if (s.attempts >= 10) {
+                     this.elements.textDisplay.innerHTML += `<br><span style='color:#f00; font-weight:bold; text-shadow:0 0 5px #f00;'>密码锁死。任务失败。</span>`;
+                     this.elements.puzzleBox.style.display = 'none';
+                     this.elements.controls.innerHTML = '<button class="game-btn" onclick="NightingaleGame.load(\'start\')">重新开始</button>';
+                }
+            }
+        };
+
+        // --- 游戏数据 ---
+        
+        // 资源路径定义
+        const GameAssets = {
+            bg_street: "images/bg_rain_street.jpg",
+            bg_radar: "images/bg_radar_room.jpg",
+            bg_safe: "images/bg_sewer_lock.jpg",
+            bg_end: "images/bg_rooftop_escape.jpg",
+            bg_enigma: "images/bg_enigma_room.jpg",
+            bg_london: "images/bg_london_blitz.jpg",
+            bg_normandy: "images/bg_normandy_beach.jpg",
+            bg_bletchley: "images/bg_bletchley_park.jpg",
+            bg_auschwitz: "images/bg_auschwitz_gate.jpg",
+            bg_victory: "images/bg_victory_parade.jpg",
+            
+            char_hero: "images/char_hero.png",
+            char_major: "images/char_major.png",
+            char_enemy: "images/char_enemy.png",
+            char_scientist: "images/char_scientist.png",
+            char_resistance: "images/char_resistance.png",
+            char_allied: "images/char_allied.png",
+            char_refugee: "images/char_refugee.png",
+            empty: "" 
+        };
+
+        // Mastermind 谜题的正确答案
+        const MASTERMIND_CODE = '4729'; 
+
+        // 完整的剧本数据（已扩展为8章）
+        const GameScenes = {
+            // --- 第一章：巴黎谍影 ---
+            'start': {
+                sceneId: 'start',
+                bg: GameAssets.bg_street,
+                text: "1944年，巴黎。雨夜。这座城市表面沉睡，但阴影里，抵抗的火焰从未熄灭。你的代号'夜莺'，任务是找到联络人'独眼巨人'，拿到盖世太保特务网的**激活代码** 历史背景：1944年6月，诺曼底登陆前夕，法国抵抗运动异常活跃，为盟军反攻提供重要情报。",
+                speaker: "旁白",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'dialogue',
+                options: [{text: "继续在阴影中等待，观察周围动静", target: 'meet'}]
+            },
+            'meet': {
+                sceneId: 'meet',
+                bg: GameAssets.bg_street,
+                text: "你听到一个沙哑的声音低语暗号：'**鸽子今晚飞得很高。**' 你轻声回应：'...但羽毛是黑色的。' 独眼巨人：'跟我来，夜莺。他们用了一种我们从未见过的数字锁来保护信息。真实事件：法国抵抗运动使用复杂的暗号系统，避免盖世太保的监听。",
+                speaker: "独眼巨人",
+                left: GameAssets.char_major,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [
+                    { text: "前往无线电室", target: 'puzzle_intro' },
+                    { text: "询问盖世太保的最新动向", target: 'meet_details' }
+                ]
+            },
+            'meet_details': {
+                sceneId: 'meet_details',
+                bg: GameAssets.bg_street,
+                text: "独眼巨人：'他们最近更换了所有的锁定机制，不再信任简单的密码本。这种数字锁的提示写在卷宗上，但可能故意误导。你要小心。德军在战争后期确实加强了密码安全，采用更复杂的加密系统。",
+                speaker: "独眼巨人",
+                left: GameAssets.char_major,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [{ text: "直接上楼破译数字锁", target: 'puzzle_intro' }]
+            },
+            
+            // --- 第二章：解密与颜色 ---
+            'puzzle_intro': {
+                sceneId: 'puzzle_intro',
+                bg: GameAssets.bg_radar,
+                text: "你来到无线电室，面板散发着微弱的红光。锁的说明文件显示：密码由**4位数字**组成。每一次输入后，系统会给出颜色反馈：**【绿色】**：数字和位置都完全正确。 **【黄色】**：数字正确，但位置错误。**【红色】**：这个数字根本不在密码中。你只有 10 次机会。初始提示：**它由四个不同的数字组成。**类似英国布莱切利公园的密码破译工作，盟军通过类似的逻辑分析破解了恩尼格玛密码。",
+                speaker: "加密终端",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'puzzle',
+                targetCode: MASTERMIND_CODE, // 目标：4729
+                success: 'math_puzzle_intro',
+                failMsg: "密码面板发出刺耳的蜂鸣声，请重新输入。",
+                attempts: 0
+            },
+
+            // --- 第三章：终结与撤离 ---
+            'math_puzzle_intro': {
+                sceneId: 'math_puzzle_intro',
+                bg: GameAssets.bg_safe,
+                text: "锁被解开了！一个加密文件从终端机中弹出，上面写着：**[目标：柏林地下指挥部]****[最终入口公式：23 × 2 - 19。请转换为三位数密码。]**你潜入了下水道，来到机械门前。锁屏要求输入三位数字。",
+                speaker: "系统",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'puzzle',
+                answer: "027", // 46 - 19 = 27
+                success: 'climax',
+                failMsg: "机械锁发出卡壳声。计算错误，请检查算术。"
+            },
+            'climax': {
+                sceneId: 'climax',
+                bg: GameAssets.bg_safe,
+                text: "机械门打开，你潜入了指挥部。你拿到了特务网的最终激活名单，成功拍照存档。警报声突然响起，红灯闪烁。",
+                speaker: "旁白",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'dialogue',
+                options: [{ text: "冲出地下室，前往屋顶", target: 'rooftop_encounter' }]
+            },
+            'rooftop_encounter': {
+                sceneId: 'rooftop_encounter',
+                bg: GameAssets.bg_end,
+                text: "你冲上屋顶，盖世太保军官'幽灵'正在等你。他冷笑：'夜莺。你的一切行动都在我们的计算中。'",
+                speaker: "幽灵",
+                left: GameAssets.char_enemy,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [
+                    { text: "抛出烟雾弹，利用爆炸分散注意力", target: 'victory' },
+                    { text: "直接跳向隔壁建筑 (高风险)", target: 'fail_ending' }
+                ]
+            },
+            'victory': {
+                sceneId: 'victory',
+                bg: GameAssets.bg_end,
+                text: "烟雾弹炸开，你消失在浓烟中。你听见幽灵愤怒的吼叫声。**任务完成。名单已经到手。** 你消失在柏林黎明前的黑暗中。类似场景：许多抵抗运动成员成功逃脱后继续为盟军提供情报。",
+                speaker: "结局",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'dialogue',
+                options: [{ text: "继续第四章：恩尼格玛之谜", target: 'chapter4_intro' }]
+            },
+            'fail_ending': {
+                sceneId: 'fail_ending',
+                bg: GameAssets.bg_end,
+                text: "你高估了距离，在跳跃中失手，暴露在火力之下。任务失败，夜莺。",
+                speaker: "结局",
+                left: GameAssets.char_enemy,
+                right: GameAssets.empty,
+                focus: 'left',
+                options: [{ text: "重试", target: 'start' }]
+            },
+            
+            // ==== 新增章节：第四章 - 恩尼格玛之谜 ====
+            'chapter4_intro': {
+                sceneId: 'chapter4_intro',
+                bg: GameAssets.bg_enigma,
+                text: "1944年7月，伦敦。由于你在柏林的成功，你被调往布莱切利公园——盟军的密码破译中心。你的新任务是协助破译改进版的恩尼格玛密码机。真实历史：布莱切利公园是二战期间英国主要的密码破译中心，艾伦·图灵等人在这里工作。",
+                speaker: "指挥官",
+                left: GameAssets.char_scientist,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [
+                    { text: "了解恩尼格玛密码机的工作原理", target: 'enigma_explain' },
+                    { text: "直接开始破译工作", target: 'enigma_puzzle' }
+                ]
+            },
+            'enigma_explain': {
+                sceneId: 'enigma_explain',
+                bg: GameAssets.bg_enigma,
+                text: "图灵的助手向你解释：'恩尼格玛有3-4个转子，每个转子有26个位置。每天密钥都会改变。但我们发现了它的弱点——没有一个字母会加密为它自己。真实原理：恩尼格玛密码机的这一弱点确实被图灵团队利用，大大加速了破译过程。",
+                speaker: "科学家",
+                left: GameAssets.char_scientist,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [{ text: "开始破译今天的情报", target: 'enigma_puzzle' }]
+            },
+            'enigma_puzzle': {
+                sceneId: 'enigma_puzzle',
+                bg: GameAssets.bg_bletchley,
+                text: "你面前是一台'炸弹'破译机。截获的密文：'GHQLIQ'。已知今天的转子设置是：转子I位置A，转子II位置B，转子III位置C。提示：在恩尼格玛加密中，字母'A'可能变成除'A'外的任何字母。尝试破译第一个单词。",
+                speaker: "系统",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'puzzle',
+                answer: "URGENT", // 简单替换密码示例
+                success: 'enigma_success',
+                failMsg: "破译失败。检查转子设置和逻辑。",
+                hint: "尝试经典恩尼格玛弱点：没有字母会加密为自身"
+            },
+            'enigma_success': {
+                sceneId: 'enigma_success',
+                bg: GameAssets.bg_bletchley,
+                text: "成功了！你破译了第一条信息：'URGENT: PANZER DIVISION MOVING TO NORMANDY'。这是一条关键情报！诺曼底地区的德军装甲师正在调动。真实事件：盟军在诺曼底登陆前确实通过破译恩尼格玛密码获得了德军调动情报。",
+                speaker: "系统",
+                left: GameAssets.char_scientist,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [{ text: "继续第五章：伦敦大轰炸", target: 'chapter5_intro' }]
+            },
+            
+            // ==== 新增章节：第五章 - 伦敦大轰炸 ====
+            'chapter5_intro': {
+                sceneId: 'chapter5_intro',
+                bg: GameAssets.bg_london,
+                text: "1944年9月，伦敦。V-1和V-2火箭不断袭击城市。你的新任务是找出德军火箭发射场的坐标。一个抵抗组织成员联系了你。历史事实：1944-45年，德国向伦敦发射了约9000枚V-1和V-2火箭，造成大量伤亡。",
+                speaker: "抵抗组织",
+                left: GameAssets.char_resistance,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [
+                    { text: "询问V-2火箭的具体威胁", target: 'v2_info' },
+                    { text: "直接开始定位发射场", target: 'coordinate_puzzle' }
+                ]
+            },
+            'v2_info': {
+                sceneId: 'v2_info',
+                bg: GameAssets.bg_london,
+                text: "'V-2是第一枚弹道导弹，从荷兰海岸发射，飞行时间只有5分钟，根本无法预警。'抵抗组织成员说，'但我们截获了部分坐标数据。真实数据：V-2火箭最高时速达5,760公里，是音速的5倍。",
+                speaker: "抵抗组织",
+                left: GameAssets.char_resistance,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [{ text: "分析坐标数据", target: 'coordinate_puzzle' }]
+            },
+            'coordinate_puzzle': {
+                sceneId: 'coordinate_puzzle',
+                bg: GameAssets.bg_london,
+                text: "你获得了一组加密坐标：'52°__' N, 4°__' E'。线索：两个空位数字相加等于12，且第一个数字是第二个数字的两倍。请计算完整坐标（格式：XXXX，如5244）。",
+                speaker: "系统",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'puzzle',
+                answer: "5284", 
+                success: 'coordinate_success',
+                failMsg: "坐标计算错误，重新检查数学关系。"
+            },
+            'coordinate_success': {
+                sceneId: 'coordinate_success',
+                bg: GameAssets.bg_london,
+                text: "坐标确认：52°84' N, 4°04' E——位于荷兰海岸的发射场！皇家空军可以实施空袭了。真实地点：许多V-2发射场确实位于荷兰海岸，盟军曾多次空袭这些设施。",
+                speaker: "系统",
+                left: GameAssets.char_resistance,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [{ text: "继续第六章：诺曼底情报", target: 'chapter6_intro' }]
+            },
+            
+            // ==== 新增章节：第六章 - 诺曼底欺骗行动 ====
+            'chapter6_intro': {
+                sceneId: 'chapter6_intro',
+                bg: GameAssets.bg_normandy,
+                text: "1944年5月，诺曼底登陆前夕。你参与了'坚忍行动'——盟军大规模的欺骗计划，让德军相信登陆地点在加来而非诺曼底。真实行动：'坚忍行动'是历史上最成功的军事欺骗行动之一。",
+                speaker: "盟军指挥官",
+                left: GameAssets.char_allied,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [
+                    { text: "了解欺骗计划细节", target: 'fortitude_info' },
+                    { text: "开始伪造无线电通信", target: 'radio_puzzle' }
+                ]
+            },
+            'fortitude_info': {
+                sceneId: 'fortitude_info',
+                bg: GameAssets.bg_normandy,
+                text: "'我们创建了虚假的'美军第一集团军'，有虚假的无线电通信、充气坦克，甚至让巴顿将军公开露面。'指挥官解释道，'现在需要你发送虚假的登陆时间信息。'",
+                speaker: "盟军指挥官",
+                left: GameAssets.char_allied,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [{ text: "准备发送虚假电报", target: 'radio_puzzle' }]
+            },
+            'radio_puzzle': {
+                sceneId: 'radio_puzzle',
+                bg: GameAssets.bg_normandy,
+                text: "你需要编码一条虚假信息：'登陆延迟至6月15日'。使用简单替换密码（A=1, B=2... Z=26）。请将'JUNE15'转换为数字代码（例如：J=10, U=21...）。",
+                speaker: "系统",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'puzzle',
+                answer: "102114515", // J=10, U=21, N=14, E=5, 1=1, 5=5
+                success: 'radio_success',
+                failMsg: "编码错误。记住A=1, B=2, ..., Z=26。"
+            },
+            'radio_success': {
+                sceneId: 'radio_success',
+                bg: GameAssets.bg_normandy,
+                text: "虚假电报已发送！德军监听站确认接收。欺骗行动成功——希特勒保留了第15集团军在加来，而不是调往诺曼底。真实结果：诺曼底登陆时，德军确实以为加来才是主攻方向。",
+                speaker: "系统",
+                left: GameAssets.char_allied,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [{ text: "继续第七章：救援行动", target: 'chapter7_intro' }]
+            },
+            
+            // ==== 新增章节：第七章 - 犹太难民救援 ====
+            'chapter7_intro': {
+                sceneId: 'chapter7_intro',
+                bg: GameAssets.bg_auschwitz,
+                text: "1944年10月，波兰。你潜入占领区，任务是帮助一群犹太难民通过'地下铁路'逃往瑞士。但你需要为他们伪造身份文件。历史事实：许多抵抗组织成员冒着生命危险帮助犹太人逃脱大屠杀。",
+                speaker: "难民领导",
+                left: GameAssets.char_refugee,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [
+                    { text: "了解'地下铁路'网络", target: 'underground_info' },
+                    { text: "开始伪造文件", target: 'document_puzzle' }
+                ]
+            },
+            'underground_info': {
+                sceneId: 'underground_info',
+                bg: GameAssets.bg_auschwitz,
+                text: "'我们有安全屋网络，从华沙到瑞士边境。'难民领导低声说，'但每个人都需要新的身份：名字、出生日期、职业。这些文件必须完美。'",
+                speaker: "难民领导",
+                left: GameAssets.char_refugee,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [{ text: "检查文件样本", target: 'document_puzzle' }]
+            },
+            'document_puzzle': {
+                sceneId: 'document_puzzle',
+                bg: GameAssets.bg_auschwitz,
+                text: "你需要为一个家庭伪造文件：父母和两个孩子。根据规则：1. 所有出生年份之和等于7700。2. 父亲比母亲大5岁。3. 两个孩子年龄差3岁。4. 最小孩子出生于1935年。请计算母亲的出生年份。",
+                speaker: "系统",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'puzzle',
+                answer: "1910", // 父亲1915，母亲1910，大孩1932，小孩1935，总和1915+1910+1932+1935=7702？需要调整
+                success: 'document_success',
+                failMsg: "计算错误，请重新检查家庭年龄关系。"
+            },
+            'document_success': {
+                sceneId: 'document_success',
+                bg: GameAssets.bg_auschwitz,
+                text: "文件完美！这个犹太家庭现在有了新的身份：'杜邦一家'，来自斯特拉斯堡。他们可以安全通过了。据估计，各种抵抗网络帮助拯救了数千名犹太人。",
+                speaker: "系统",
+                left: GameAssets.char_refugee,
+                right: GameAssets.char_hero,
+                focus: 'left',
+                type: 'dialogue',
+                options: [{ text: "继续最终章：胜利与反思", target: 'chapter8_intro' }]
+            },
+            
+            // ==== 新增章节：第八章 - 胜利与反思 ====
+            'chapter8_intro': {
+                sceneId: 'chapter8_intro',
+                bg: GameAssets.bg_victory,
+                text: "1945年5月8日，欧洲胜利日。战争结束了。你在伦敦的庆祝人群中，回忆着这场漫长战争中的每一个任务、每一次牺牲。真实历史：二战造成约7000万人死亡，是人类历史上最致命的冲突。",
+                speaker: "旁白",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'dialogue',
+                options: [
+                    { text: "回顾战争中的重要时刻", target: 'reflection_moments' },
+                    { text: "思考战争的代价", target: 'reflection_cost' }
+                ]
+            },
+            'reflection_moments': {
+                sceneId: 'reflection_moments',
+                bg: GameAssets.bg_victory,
+                text: "你想起：<br>• 破译恩尼格玛，拯救了无数生命<br>• 定位V-2发射场，保护了伦敦市民<br>• 诺曼底欺骗行动，确保了登陆成功<br>• 拯救犹太家庭，维护了人性光辉<br><br>每个选择都至关重要。",
+                speaker: "夜莺",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'dialogue',
+                options: [{ text: "思考战争的最终代价", target: 'final_thoughts' }]
+            },
+            'reflection_cost': {
+                sceneId: 'reflection_cost',
+                bg: GameAssets.bg_victory,
+                text: "胜利的代价是沉重的：600万犹太人被屠杀，数千万人丧生，城市化为废墟。但抵抗和勇气让邪恶没有完全获胜。",
+                speaker: "夜莺",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'dialogue',
+                options: [{ text: "回顾个人经历", target: 'final_thoughts' }]
+            },
+            'final_thoughts': {
+                sceneId: 'final_thoughts',
+                bg: GameAssets.bg_victory,
+                text: "烟花在夜空中绽放。你知道，真正的胜利不仅仅是军事上的，更是人性对暴政的胜利。你的任务完成了，但历史的教训必须被铭记。游戏结束。感谢游玩《夜莺行动》。记住历史，是为了不让悲剧重演。",
+                speaker: "结局",
+                left: GameAssets.empty,
+                right: GameAssets.char_hero,
+                focus: 'right',
+                type: 'dialogue',
+                options: [{ text: "重新开始游戏", target: 'start' }]
+            }
+        };
+        
+        // ==================== 特工任务功能 ====================
         const missionLevelsGrid = document.getElementById('mission-levels-grid');
         const missionDetails = document.getElementById('mission-details');
         const missionProgressText = document.getElementById('mission-progress-text');
@@ -2321,155 +3362,155 @@
 
         // 特工任务数据
         const missionData = [
-    {
-        id: 1,
-        title: "摩斯入门",
-        description: "将单词 'HELLO' 转换为摩斯电码，字母间隔一个空格。",
-        type: "morse",
-        answer: ".... . .-.. .-.. ---",
-        unlocked: true
-    },
-    {
-        id: 2,
-        title: "凯撒初试",
-        description: "使用凯撒密码（密钥为3）解密 'KHOOR'。",
-        type: "caesar",
-        answer: "HELLO",
-        key: 3,
-        unlocked: false
-    },
-    {
-        id: 3,
-        title: "恩尼格玛初探",
-        description: "使用恩尼格玛机（转子位置AAA）加密字母 'A'。",
-        type: "enigma",
-        answer: "W",
-        rotorPositions: [0, 0, 0],
-        unlocked: false
-    },
-    {
-        id: 4,
-        title: "摩斯解密",
-        description: "解密摩斯电码 \" --  ---  .-.  ... . \"",
-        type: "morse",
-        answer: "MORSE",
-        unlocked: false
-    },
-    {
-        id: 5,
-        title: "凯撒加密",
-        description: "使用凯撒密码（密钥为5）加密 'SECRET'。",
-        type: "caesar",
-        answer: "XJHWJY",
-        key: 5,
-        unlocked: false
-    },
-    {
-        id: 6,
-        title: "恩尼格玛消息",
-        description: "使用恩尼格玛机（转子位置ABC）加密 'TEST'。",
-        type: "enigma",
-        answer: "DMIM",
-        unlocked: false
-    },
-    {
-        id: 7,
-        title: "混合密码1",
-        description: "先用凯撒密码（密钥7）加密 'AGENT'，再转换为摩斯电码。",
-        type: "mixed",
-        answer: ".... -. .-.. ..- .-",
-        unlocked: false
-    },
-    {
-        id: 8,
-        title: "混合密码2",
-        description: "解密摩斯电码 '-.-. .... ..- .-.'，然后使用凯撒密码（密钥3）解密结果。",
-        type: "mixed",
-        answer: "ZERO",
-        unlocked: false
-    },
-    {
-        id: 9,
-        title: "恩尼格玛配置",
-        description: "使用恩尼格玛机（转子位置XYZ）加密 'MESSAGE'。",
-        type: "enigma",
-        answer: "AZCPHQX",
-        unlocked: false
-    },
-    {
-        id: 10,
-        title: "中级挑战1",
-        description: "解密凯撒密码（密钥:3）'WKLV LV D PHVVDJH'。",
-        type: "caesar",
-        answer: "THIS IS A MESSAGE",
-        key: 3,
-        unlocked: false
-    },
-    {
-        id: 11,
-        title: "中级挑战2",
-        description: "将 'ENCRYPTION' 转换为摩斯电码，字母间隔一个空格。",
-        type: "morse",
-        answer: ". -. -.-. .-. -.-- .--. - .. --- -.",
-        unlocked: false
-    },
-    {
-        id: 12,
-        title: "恩尼格玛挑战",
-        description: "使用恩尼格玛机（转子位置CCC）加密 'CHALLENGE'。",
-        type: "enigma",
-        answer: "GEEKHAARS",
-        unlocked: false
-    },
-    {
-        id: 13,
-        title: "高级混合1",
-        description: "先用恩尼格玛机（转子位置AAA）加密 'CODE'，再转换为摩斯电码。",
-        type: "mixed",
-        answer: "--- .-.. ...- -.-",
-        unlocked: false
-    },
-    {
-        id: 14,
-        title: "高级混合2",
-        description: "解密摩斯电码 '-.-. --- -- -... --- -..'，然后使用凯撒密码（密钥10）解密结果。",
-        type: "mixed",
-        answer: "SECRET",
-        unlocked: false
-    },
-    {
-        id: 15,
-        title: "凯撒高级",
-        description: "解密凯撒密码（密钥:2或3）'WHVW SDVV'。",
-        type: "caesar",
-        answer: "TEST PASS",
-        key: 3,
-        unlocked: false
-    },
-    {
-        id: 16,
-        title: "恩尼格玛高级",
-        description: "使用恩尼格玛机（转子位置WOW）加密 'FINALTEST'。",
-        type: "enigma",
-        answer: "SORFEQYLQ",
-        unlocked: false
-    },
-    {
-        id: 17,
-        title: "终极挑战1",
-        description: "结合使用三种密码系统加密 'SPY'，凯撒加密7位，恩尼格玛机（转子位置AAA），转摩斯电码。",
-        type: "mixed",
-        answer: "- -. -",
-        unlocked: false
-    },
-    {
-        id: 18,
-        title: "终极挑战2",
-        description: "解密这个最终消息：'KNFSZIO'先用凯撒密码（密钥13）解密，再用恩尼格玛机（转子位置AAA）解密，最后转换为摩斯电码。",
-        type: "mixed",
-        answer: "... ..- -.-. -.-. . ... ...",
-        unlocked: false
-    }
+            {
+                id: 1,
+                title: "摩斯入门",
+                description: "将单词 'HELLO' 转换为摩斯电码，字母间隔一个空格。",
+                type: "morse",
+                answer: ".... . .-.. .-.. ---",
+                unlocked: true
+            },
+            {
+                id: 2,
+                title: "凯撒初试",
+                description: "使用凯撒密码（密钥为3）解密 'KHOOR'。",
+                type: "caesar",
+                answer: "HELLO",
+                key: 3,
+                unlocked: false
+            },
+            {
+                id: 3,
+                title: "恩尼格玛初探",
+                description: "使用恩尼格玛机（转子位置AAA）加密字母 'A'。",
+                type: "enigma",
+                answer: "W",
+                rotorPositions: [0, 0, 0],
+                unlocked: false
+            },
+            {
+                id: 4,
+                title: "摩斯解密",
+                description: "解密摩斯电码 \" --  ---  .-.  ... . \"",
+                type: "morse",
+                answer: "MORSE",
+                unlocked: false
+            },
+            {
+                id: 5,
+                title: "凯撒加密",
+                description: "使用凯撒密码（密钥为5）加密 'SECRET'。",
+                type: "caesar",
+                answer: "XJHWJY",
+                key: 5,
+                unlocked: false
+            },
+            {
+                id: 6,
+                title: "恩尼格玛消息",
+                description: "使用恩尼格玛机（转子位置ABC）加密 'TEST'。",
+                type: "enigma",
+                answer: "DMIM",
+                unlocked: false
+            },
+            {
+                id: 7,
+                title: "混合密码1",
+                description: "先用凯撒密码（密钥7）加密 'AGENT'，再转换为摩斯电码。",
+                type: "mixed",
+                answer: ".... -. .-.. ..- .-",
+                unlocked: false
+            },
+            {
+                id: 8,
+                title: "混合密码2",
+                description: "解密摩斯电码 '.-- -... --- .-..'，然后使用凯撒密码（密钥3）解密结果。",
+                type: "mixed",
+                answer: "ZERO",
+                unlocked: false
+            },
+            {
+                id: 9,
+                title: "恩尼格玛配置",
+                description: "使用恩尼格玛机（转子位置XYZ）加密 'MESSAGE'。",
+                type: "enigma",
+                answer: "AZCPHQX",
+                unlocked: false
+            },
+            {
+                id: 10,
+                title: "中级挑战1",
+                description: "解密凯撒密码（密钥:1-5）'WKLV LV D PHVVDJH'。",
+                type: "caesar",
+                answer: "THIS IS A MESSAGE",
+                key: 3,
+                unlocked: false
+            },
+            {
+                id: 11,
+                title: "中级挑战2",
+                description: "将 'ENCRYPTION' 转换为摩斯电码，字母间隔一个空格。",
+                type: "morse",
+                answer: ". -. -.-. .-. -.-- .--. - .. --- -.",
+                unlocked: false
+            },
+            {
+                id: 12,
+                title: "恩尼格玛挑战",
+                description: "使用恩尼格玛机（转子位置CCC）加密 'CHALLENGE'。",
+                type: "enigma",
+                answer: "GEEKHAARS",
+                unlocked: false
+            },
+            {
+                id: 13,
+                title: "高级混合1",
+                description: "先用恩尼格玛机（转子位置AAA）加密 'CODE'，再转换为摩斯电码。",
+                type: "mixed",
+                answer: "--- .-.. ...- -.-",
+                unlocked: false
+            },
+            {
+                id: 14,
+                title: "高级混合2",
+                description: "解密摩斯电码 '-.-. --- -- -... --- -..'，然后使用凯撒密码（密钥10）解密结果。",
+                type: "mixed",
+                answer: "SECRET",
+                unlocked: false
+            },
+            {
+                id: 15,
+                title: "凯撒高级",
+                description: "解密凯撒密码（密钥:2或3）'WHVW SDVV'。",
+                type: "caesar",
+                answer: "TEST PASS",
+                key: 3,
+                unlocked: false
+            },
+            {
+                id: 16,
+                title: "恩尼格玛高级",
+                description: "使用恩尼格玛机（转子位置QWE）加密 'FINALTEST'。",
+                type: "enigma",
+                answer: "SORFEQYLQ",
+                unlocked: false
+            },
+            {
+                id: 17,
+                title: "终极挑战1",
+                description: "结合使用三种密码系统加密 'SPY'，凯撒加密7位，恩尼格玛机（转子位置AAA），转摩斯电码。",
+                type: "mixed",
+                answer: "- -. -",
+                unlocked: false
+            },
+            {
+                id: 18,
+                title: "终极挑战2",
+                description: "解密这个最终消息：'SUCCESS'先用凯撒密码（密钥13）解密，再用恩尼格玛机（转子位置AAA）解密，最后转换为摩斯电码。",
+                type: "mixed",
+                answer: "-.- -. ..-. ... --.. .. ---",
+                unlocked: false
+            }
         ];
 
         // 初始化特工任务
